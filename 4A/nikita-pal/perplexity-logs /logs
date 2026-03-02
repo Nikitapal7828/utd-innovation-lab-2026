@@ -1,90 +1,106 @@
-# Task 4 – Goal and Findings
+# Task 6: Research Process Log (Perplexity Research Session)
 
-## Goal of Task 4
-
-The goal of this task was to design and document a high-level integration architecture for a multi-channel AI chatbot system.
-
-This included:
-
-- Understanding how users from different platforms (web, WhatsApp, voice) interact with a centralized system.
-- Planning how the chatbot connects to backend systems such as events, donations, contact forms, and CRM.
-- Designing a shared architecture that supports multiple websites without duplicating logic.
-- Creating structured documentation that clearly explains the full system flow.
-
-This task focused on research, architectural planning, and documentation only. No implementation was performed.
+**Project:** JKYog Multi-Channel Engagement Platform  
+**Consultant:** Nikita Pal  
+**Focus Area:** Task 4 — Dual-Site Integration Architecture  
+**Date:** Feb 19 – Feb 20, 2026  
 
 ---
 
-## Key Findings
+# Phase I: Problem Framing — The Dual-Site Context Challenge
 
-### 1. Need for a Layered Architecture
+## Goal
+Design a unified bot architecture capable of serving:
 
-A scalable system requires clear separation of responsibilities.
+- radhakrishnatemple.net (Local Temple Operations – Dallas)
+- jkyog.org (Global Spiritual Organization)
 
-The architecture was divided into:
-
-- Users Layer
-- Channel Layer
-- Automation / Orchestration Layer
-- Bot Core Engine
-- Backend APIs Layer
-
-This separation ensures maintainability, scalability, and clarity in system design.
+Without:
+- Cross-contaminating knowledge
+- Mixing branding
+- Sharing unintended user data
+- Increasing infrastructure cost unnecessarily
 
 ---
 
-### 2. Shared Bot Core with Site Context Routing
+## Initial Strategic Query
 
-Instead of building separate bots for each website, a shared AI core can be used.
-
-The system dynamically routes responses based on the originating website context.  
-This allows:
-
-- Reuse of conversational logic
-- Separation of knowledge bases
-- Reduced duplication
-- Easier maintenance
+> What architectural patterns are used in modern multi-tenant AI chatbot systems to support multiple domains with shared infrastructure but isolated contextual knowledge?
 
 ---
 
-### 3. Importance of Channel Abstraction
+## Research Direction
 
-Each platform communicates differently.
-
-To handle this, a Channel Layer is required that:
-
-- Converts incoming messages into a standardized format
-- Ensures consistent internal processing
-- Supports Web Chat, WhatsApp, and Voice input
-
----
-
-### 4. Backend Integration is Essential
-
-The chatbot must perform real actions beyond answering questions.
-
-Required integrations include:
-
-- Events management
-- Donation processing
-- Contact form submission
-- Newsletter subscription
-- CRM integration
-
-These integrations allow the chatbot to connect with real operational systems.
+Explored:
+- Multi-tenant SaaS AI systems
+- Domain-based routing architectures
+- Context injection patterns in LLM systems
+- Vector database partitioning strategies
+- Knowledge isolation in RAG pipelines
 
 ---
 
-### 5. Context Management is Required
+## Key Insight
 
-A session store is necessary to retain user context during conversations.
+Modern AI systems follow this pattern:
 
-This ensures the bot can understand follow-up inputs and maintain coherent multi-step interactions.
+- Shared LLM core
+- Context injection layer
+- Namespaced or partitioned vector knowledge base
+- Metadata-based routing
+
+This avoids duplicating AI infrastructure while maintaining contextual separation.
 
 ---
 
-## Summary
+## Early Decision
 
-The goal was to design how the entire system connects across multiple platforms and backend services.
+Rejected:
+- Fully separate bot instances per site (high cost + duplicated effort)
 
-The findings show that a centralized bot core, layered architecture, channel abstraction, and structured backend integration are essential for building a scalable and maintainable solution.
+Adopted:
+- Shared AI Core + Context Routing Layer
+
+---
+
+# Phase II: Domain-Based Context Routing Strategy
+
+## Goal
+
+Determine how the system programmatically identifies which site context to apply across:
+
+- Web Chat
+- WhatsApp
+- Voice Calls
+
+---
+
+## Strategic Query
+
+> What are the most reliable context detection mechanisms across multi-channel conversational systems?
+
+---
+
+## Findings
+
+Identified 3 reliable routing mechanisms:
+
+1. Domain-based routing (HTTP Origin Header for web)
+2. Channel-based routing (WhatsApp phone number ID)
+3. Campaign-based routing (Voice campaign metadata)
+
+---
+
+## Routing Implementation Design
+
+### Website Example
+
+Request:
+
+```json
+POST /chat/init
+{
+  "site": "jkyog",
+  "session_id": "uuid",
+  "message": "How do I enroll in Gita course?"
+}
